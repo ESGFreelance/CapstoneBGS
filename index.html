@@ -27,10 +27,10 @@ Suaverdez II, Jericho <BR />
 var latty;
 var longy;
 navigator.geolocation.getCurrentPosition(function(location) {
-  var latlng = new L.LatLng(latty, longy);
+
  	latty =  location.coords.latitude;
 longy =  location.coords.longitude;
-
+  var latlng = new L.LatLng(latty, longy);
   var mymap = L.map('mapid').setView(latlng, 13)
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attributionControl:false,
