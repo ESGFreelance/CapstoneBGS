@@ -27,7 +27,7 @@ Suaverdez II, Jericho <BR />
 var latty;
 var longy;
 navigator.geolocation.getCurrentPosition(function(location) {
-  var latlng = new L.LatLng(14.566460, 121.041130);
+  var latlng = new L.LatLng(latty, longy);
  	latty =  location.coords.latitude;
 longy =  location.coords.longitude;
 
