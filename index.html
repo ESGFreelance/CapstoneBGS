@@ -17,13 +17,15 @@
 
   <body>
     <p>
-      <b>Group BGS Capstone Mapping Prototype</b>
+      <b>Capstone Group BGS Dummy Page</b>
     </p>
 
     <button type="button" class="btn btn-primary" onclick="getData()">
       Edward
     </button>
 
+
+    
     <p id="DisplayCoordinates"></p>
     <p id="DisplayInformation"></p>
 
@@ -38,10 +40,30 @@
    
    function getData() {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(providePosition);
+        navigator.geolocation.watchPosition(providePosition,showError);
       } else {
         x.innerHTML = "Geolocation is not supported by this browser.";
       }
+   }
+
+   function showError(error) {
+     switch(error.code) {
+       case error.PERMISSION_DENIED:
+       x.innerHTML = "User denied the request for Geolocation."
+       break;
+       
+       case error.POSITION_UNAVAILABLE:
+       x.innerHTML = "Location information is unavailable."
+       break;
+       
+       case error.TIMEOUT:
+       x.innerHTML = "The request to get user location timed out."
+       break;
+       
+       case error.UNKNOWN_ERROR:
+       x.innerHTML = "An unknown error occurred."
+       break;
+     }
    }
 
    function providePosition(position){
@@ -49,9 +71,9 @@
      var YCoordinate = position.coords.longitude;
      
      //Display the (X,Y) to HTML page
-     x.innerHTML = 
-     "Latitude: " + XCoordinate + "<br />" +
-     "Longitude: " + YCoordinate;
+    //  x.innerHTML = 
+    //  "Latitude: " + XCoordinate + "<br />" +
+    //  "Longitude: " + YCoordinate;
 
      //Create a query to get the information of the coordinate
      //latitude=X&longitude=Y&localityLanguage=en;
@@ -69,10 +91,12 @@
        if (this.readyState == 4 && this.status == 200) {
          var myObj = JSON.parse(this.responseText);
 
-         y.innerHTML +=
+         y.innerHTML +="<br />"+
+         "X Coordinate: "+XCoordinate + "<br />"+
+         "Y Coordinate: "+YCoordinate + "<br />"+
          "Postal Code: " + myObj.postcode + "<br />" +
          "City: " + myObj.city + "<br />" +
-         "Country: " + myObj.countryName;
+         "Country: " + myObj.countryName + "<br />";
         }
       };
 
@@ -85,6 +109,9 @@
         accessToken: 'pk.eyJ1IjoiYmJyb29rMTU0IiwiYSI6ImNpcXN3dnJrdDAwMGNmd250bjhvZXpnbWsifQ.Nf9Zkfchos577IanoKMoYQ'
         }).addTo(mymap);
         var marker = L.marker(latlng).addTo(mymap);
+
+        mymap.scrollWheelZoom.disable();
+
 
    }
 
