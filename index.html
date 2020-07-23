@@ -1,61 +1,93 @@
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
    crossorigin=""/>
+   
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin="">
+  </script>
 
-    <!-- Make sure you put this AFTER Leaflet's CSS -->
- <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
- integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
- crossorigin=""></script>
+  <style>
+    #mapid { height: 500px; }
+  </style>
+</head>
 
- <style>
-     #mapid { height: 500px; }
+  <body>
+    <p>
+      <b>Capstone Group BGS Dummy Page</b>
+    </p>
 
- </style>
-<body>
-    CAPSTONE PROTOTYPE GROUP BGS (gumagana ba ang commit # 3?)
-<p>
-Capstone Group BGS <BR />
-Bendita, John  <BR />
-Garcia, Edward <BR />
-Suaverdez II, Jericho <BR />
-</p>
+    <button type="button" class="btn btn-primary" onclick="getData()">
+      Edward
+    </button>
+
+
+    
+    <p id="DisplayCoordinates"></p>
+    <p id="DisplayInformation"></p>
+
     <div id="mapid"></div>
 
-</body>
+  </body>
+</html>
+
 <script>
+   var x = document.getElementById("DisplayCoordinates"); //Stores the data into X
+   var y = document.getElementById("DisplayInformation"); //stores the data into Y
+   
+   function getData() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(providePosition);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+   }
 
-var latty;
-var longy;
-navigator.geolocation.getCurrentPosition(function(location) {
+   function providePosition(position){
+     var XCoordinate = position.coords.latitude;
+     var YCoordinate = position.coords.longitude;
+     
+     //Display the (X,Y) to HTML page
+     x.innerHTML = 
+     "Latitude: " + XCoordinate + "<br />" +
+     "Longitude: " + YCoordinate;
 
- 	latty =  location.coords.latitude;
-longy =  location.coords.longitude;
-  var latlng = new L.LatLng(latty, longy);
-  var mymap = L.map('mapid').setView(latlng, 13)
-  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-    attributionControl:false,
-    maxZoom: 100,
-    id: 'mapbox.streets',
-    accessToken: 'pk.eyJ1IjoiYmJyb29rMTU0IiwiYSI6ImNpcXN3dnJrdDAwMGNmd250bjhvZXpnbWsifQ.Nf9Zkfchos577IanoKMoYQ'
-  }).addTo(mymap);
+     //Create a query to get the information of the coordinate
+     //latitude=X&longitude=Y&localityLanguage=en;
+     var query = "latitude="+XCoordinate+"&longitude="+YCoordinate+"&localityLanguage=en";
+     
+     //Establish a request
+     const Http = new XMLHttpRequest();
+     
+     var bigdatacloud_api = "https://api.bigdatacloud.net/data/reverse-geocode-client?";
+     bigdatacloud_api += query;
+     Http.open("GET", bigdatacloud_api);
+     Http.send();
+     
+     Http.onreadystatechange = function() {
+       if (this.readyState == 4 && this.status == 200) {
+         var myObj = JSON.parse(this.responseText);
 
-  var marker = L.marker(latlng).addTo(mymap);
+         y.innerHTML +=
+         "Postal Code: " + myObj.postcode + "<br />" +
+         "City: " + myObj.city + "<br />" +
+         "Country: " + myObj.countryName;
+        }
+      };
 
-});
+      var latlng = new L.LatLng(XCoordinate, YCoordinate);
+      var mymap = L.map('mapid').setView(latlng, 13)
+      L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+        attributionControl:false,
+        maxZoom: 100,
+        id: 'mapbox.streets',
+        accessToken: 'pk.eyJ1IjoiYmJyb29rMTU0IiwiYSI6ImNpcXN3dnJrdDAwMGNmd250bjhvZXpnbWsifQ.Nf9Zkfchos577IanoKMoYQ'
+        }).addTo(mymap);
+        var marker = L.marker(latlng).addTo(mymap);
 
-
-
-
-function centerLeafletMapOnMarker(map, marker) {
-  var latLngs = [ marker.getLatLng() ];
-  var markerBounds = L.latLngBounds(latLngs);
-  map.fitBounds(markerBounds);
-
-}
+   }
 
 </script>
-
-TYPE OF ENVIRONMENTAL CONCERN: TO BE ADDED VIA DB <BR />
-CITY LOCATION: <BR />
-CITY ID: <BR />
-IMAGE OF ENVIRONMENTAL CONCERN :) :) :) :)
