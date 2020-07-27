@@ -17,14 +17,13 @@
 
   <body>
     <p>
-      <b>Capstone Group BGS Dummy Page</b>
+      <b>Capstone Group BGS Dummy Page</b> :D:D
+      
     </p>
 
     <button type="button" class="btn btn-primary" onclick="getData()">
       Edward
     </button>
-
-
     
     <p id="DisplayCoordinates"></p>
     <p id="DisplayInformation"></p>
@@ -40,16 +39,22 @@
    
    function getData() {
     if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(providePosition,showError);
+      
+        //navigator.geolocation.watchPosition(providePosition,showError);
+
+        navigator.geolocation.watchPosition(providePosition, showError, {
+        enableHighAccuracy: true,
+        maximumAge: 5000 // 5 sec.
+      });
       } else {
         x.innerHTML = "Geolocation is not supported by this browser.";
-      }
+      }      
    }
 
    function showError(error) {
      switch(error.code) {
        case error.PERMISSION_DENIED:
-       x.innerHTML = "User denied the request for Geolocation."
+       x.innerHTML = "Permission was denied by the user."
        break;
        
        case error.POSITION_UNAVAILABLE:
@@ -69,7 +74,8 @@
    function providePosition(position){
      var XCoordinate = position.coords.latitude;
      var YCoordinate = position.coords.longitude;
-     
+     //, 121.0039863
+
      //Display the (X,Y) to HTML page
     //  x.innerHTML = 
     //  "Latitude: " + XCoordinate + "<br />" +
@@ -100,19 +106,23 @@
         }
       };
 
-      var latlng = new L.LatLng(XCoordinate, YCoordinate);
-      var mymap = L.map('mapid').setView(latlng, 13)
+/*
+      var container = L.DomUtil.get('mapid');
+      if(container != null){
+        container._leaflet_id = null;
+      }
+*/
+    var latlng = new L.LatLng(XCoordinate, YCoordinate);
+      var mymap = L.map('mapid', { attributionControl:true }).setView(latlng, 13)
+      
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attributionControl:false,
-        maxZoom: 100,
+        maxZoom: 1000,
         id: 'mapbox.streets',
         accessToken: 'pk.eyJ1IjoiYmJyb29rMTU0IiwiYSI6ImNpcXN3dnJrdDAwMGNmd250bjhvZXpnbWsifQ.Nf9Zkfchos577IanoKMoYQ'
         }).addTo(mymap);
         var marker = L.marker(latlng).addTo(mymap);
-
-        mymap.scrollWheelZoom.disable();
-
-
+        //mymap.scrollWheelZoom.disable();
    }
 
 </script>
