@@ -20,7 +20,9 @@
       <b>Capstone Group BGS Dummy Page</b> :D:D TRY 1
       
     </p>
-<marquee>Jeric Nababasa mo ba to?</marquee>
+<input type="file" capture="camera" accept="image/*" id="cameraInput" name="cameraInput">
+
+
 
     <button type="button" class="btn btn-primary" onclick="getData()">
       Edward
@@ -125,5 +127,13 @@
         var marker = L.marker(latlng).addTo(mymap);
         //mymap.scrollWheelZoom.disable();
    }
+  
+  $('#cameraInput').on('change', function(e){
+ $data = e.originalEvent.target.files[0];
+  $reader = new FileReader();
+  reader.onload = function(evt){
+  $('#your_img_id').attr('src',evt.target.result);
+  reader.readAsDataUrl($data);
+}});
 
 </script>
